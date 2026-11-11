@@ -1,0 +1,109 @@
+{
+  "plugins": [
+    {
+      "name": "VEuPathDBSite",
+      "url": "http://localhost:9005/dist/jbrowse-plugin-veupathdb-site.umd.development.js"
+    }
+  ],
+  "configuration": {
+    "VEuPathDBSite": {
+      "hubUrlTemplate": "/hubs/{abbrev}.hub.json"
+    }
+  },
+  "assemblies": [
+    {
+      "name": "volvox",
+      "displayName": "Volvox imaginary",
+      "sequence": {
+        "type": "ReferenceSequenceTrack",
+        "trackId": "volvox_refseq",
+        "adapter": {
+          "type": "TwoBitAdapter",
+          "uri": "http://localhost:3000/test_data/volvox/volvox.2bit"
+        }
+      }
+    },
+    {
+      "name": "volvox_protein",
+      "displayName": "Volvox imaginary (protein)",
+      "sequence": {
+        "type": "ReferenceSequenceTrack",
+        "trackId": "volvox_protein_refseq",
+        "sequenceType": "pep",
+        "adapter": {
+          "type": "FromConfigSequenceAdapter",
+          "features": [
+            {
+              "uniqueId": "VOLVOX_P1",
+              "refName": "VOLVOX_P1",
+              "start": 0,
+              "end": 60,
+              "seq": "MSKGEELFTGVVPILVELDGDVNGHKFSVSGEGEGDATYGKLTLKFICTTGKLPVPWPTL"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "synthA",
+      "displayName": "Synthetica alpha",
+      "sequence": {
+        "type": "ReferenceSequenceTrack",
+        "trackId": "synthA_refseq",
+        "adapter": {
+          "type": "FromConfigSequenceAdapter",
+          "features": [
+            {
+              "uniqueId": "synthA_chr1",
+              "refName": "synthA_chr1",
+              "start": 0,
+              "end": 120,
+              "seq": "ATGGCTAGCAAAGGAGAAGAACTTTTCACTGGAGTTGTCCCAATTCTTGTTGAATTAGATGGTGATGTTAATGGGCACAAATTTTCTGTCAGTGGAGAGGGTGAAGGTGATGCAACATAA"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "synthA_protein",
+      "displayName": "Synthetica alpha (protein)",
+      "sequence": {
+        "type": "ReferenceSequenceTrack",
+        "trackId": "synthA_protein_refseq",
+        "sequenceType": "pep",
+        "adapter": {
+          "type": "FromConfigSequenceAdapter",
+          "features": [
+            {
+              "uniqueId": "SYNTHA_P1",
+              "refName": "SYNTHA_P1",
+              "start": 0,
+              "end": 39,
+              "seq": "MASKGEELFTGVVPILVELDGDVNGHKFSVSGEGEGDAT"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "nohub",
+      "displayName": "Nohubia beta (no hub file)",
+      "sequence": {
+        "type": "ReferenceSequenceTrack",
+        "trackId": "nohub_refseq",
+        "adapter": {
+          "type": "FromConfigSequenceAdapter",
+          "features": [
+            {
+              "uniqueId": "nohub_chr1",
+              "refName": "nohub_chr1",
+              "start": 0,
+              "end": 60,
+              "seq": "GATTACAGATTACAGATTACAGATTACAGATTACAGATTACAGATTACAGATTACAGATT"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
