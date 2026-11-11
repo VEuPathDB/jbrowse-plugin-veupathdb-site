@@ -1,0 +1,32 @@
+{
+  "tracks": [
+    {
+      "type": "FeatureTrack",
+      "trackId": "volvox_hub_genes",
+      "name": "Volvox genes (from hub)",
+      "assemblyNames": ["volvox"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "uri": "http://localhost:3000/test_data/volvox/volvox.sort.gff3.gz"
+      }
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "volvox_hub_domains",
+      "name": "Volvox protein domains (from hub)",
+      "assemblyNames": ["volvox_protein"],
+      "adapter": {
+        "type": "FromConfigAdapter",
+        "features": [
+          {
+            "uniqueId": "vd1",
+            "refName": "VOLVOX_P1",
+            "start": 5,
+            "end": 30,
+            "name": "domainA"
+          }
+        ]
+      }
+    }
+  ]
+}
