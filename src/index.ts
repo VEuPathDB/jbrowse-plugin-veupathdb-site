@@ -3,15 +3,26 @@ import {
   readConfObject,
 } from '@jbrowse/core/configuration'
 import Plugin from '@jbrowse/core/Plugin'
+import { extendViewType } from '@jbrowse/core/pluggableElementTypes'
+import { getSession } from '@jbrowse/core/util'
 import { addDisposer } from '@jbrowse/mobx-state-tree'
 import { autorun } from 'mobx'
 
+import { holdInitTracks } from './holdInitTracks'
 import { abbrevOf, connectionsToAdd, templateProblem } from './hubAttach'
+
+import type { HoldSession, HoldView } from './holdInitTracks'
 
 import type { HubConnectionConf } from './hubAttach'
 import type { AnyConfigurationModel } from '@jbrowse/core/configuration'
 import type PluginManager from '@jbrowse/core/PluginManager'
 import type { IAnyModelType, IAnyStateTreeNode } from '@jbrowse/mobx-state-tree'
+
+declare module '@jbrowse/core/PluginManager' {
+  interface ViewTypeRegistry {
+    LinearGenomeView: IAnyModelType
+  }
+}
 
 export const PLUGIN_NAME = 'VEuPathDBSite'
 
@@ -115,6 +126,17 @@ export default class VEuPathDBSitePlugin extends Plugin {
             )
           },
         })),
+    )
+    extendViewType(pluginManager, 'LinearGenomeView', stateModel =>
+      stateModel.actions((self: IAnyStateTreeNode) => ({
+        afterAttach() {
+          const session = getSession(self) as unknown as HubSession &
+            HoldSession
+          if (!templateProblem(readTemplate(session))) {
+            holdInitTracks(self as HoldView & IAnyStateTreeNode, session)
+          }
+        },
+      })),
     )
   }
 }

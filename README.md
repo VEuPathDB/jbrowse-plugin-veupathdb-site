@@ -41,6 +41,33 @@ once per session.
 - Restored sessions keep their hub connections dormant until the organism's
   track group is expanded (core's lazy `hydrateConnection`).
 
+### Hub tracks in a plain link
+
+A link's `tracks=` can name tracks that only the organism's hub provides:
+
+```
+?config=…&assembly=<abbrev>&loc=<locstring>&tracks=<hubTrackId>,<rootTrackId>
+```
+
+The hub attaches only once the view has navigated, so without help those ids
+would not resolve when JBrowse opens the link's tracks. The plugin holds them:
+
+- On a fresh linear genome view whose assembly has a hub, init tracks that
+  don't resolve yet are taken out of the view's launch and held. Tracks that
+  already resolve (root-config tracks, the reference sequence) open at once.
+- When the organism's hub connection has loaded, or failed, the held tracks
+  open in their URL order, after the ones that opened at once.
+- An id the loaded hub doesn't have gets JBrowse's usual
+  `Could not resolve identifier "<id>"` snackbar. A hub that fails to load
+  (a 404, for example) shows its connection error and releases the held
+  tracks, which then error the same way. The view itself never waits on the
+  hub, so there is no timeout.
+- A genome view and a protein view (`<abbrev>_protein`) wait on the same
+  `hub-<abbrev>` connection. A restored session whose hub connection is
+  dormant gets it hydrated.
+- Track options (`modifiers`, inline display settings) travel with a held
+  track, since it is launched again through JBrowse's own init path.
+
 ## Development
 
 Node 24, pnpm 11.
@@ -68,6 +95,22 @@ everything else to the dev server.
 ```
 http://localhost:3000/?config=http://localhost:9005/test_config/veupathdb-site-test.json
 http://localhost:3000/?config=http://localhost:9005/test_config/veupathdb-site-test-unset.json
+```
+
+Hub tracks in a plain link (fresh load; each should open the named tracks or
+show the stated error):
+
+```
+# one hub track
+http://localhost:3000/?config=http://localhost:9005/test_config/veupathdb-site-test.json&assembly=volvox&loc=ctgA:1..6000&tracks=volvox_hub_genes
+# two hub tracks and a root-config track
+http://localhost:3000/?config=http://localhost:9005/test_config/veupathdb-site-test.json&assembly=volvox&loc=ctgA:1..6000&tracks=volvox_hub_coverage,volvox_hub_genes,volvox_refseq
+# misspelled hub id: Could not resolve identifier "volvox_hub_genez"
+http://localhost:3000/?config=http://localhost:9005/test_config/veupathdb-site-test.json&assembly=volvox&loc=ctgA:1..6000&tracks=volvox_hub_genez
+# hub 404: the view loads, then the connection error and the held track's error
+http://localhost:3000/?config=http://localhost:9005/test_config/veupathdb-site-test.json&assembly=nohub&loc=nohub_chr1:1..60&tracks=nohub_hub_genes
+# protein view
+http://localhost:3000/?config=http://localhost:9005/test_config/veupathdb-site-test.json&assembly=volvox_protein&loc=VOLVOX_P1:1..60&tracks=volvox_hub_domains
 ```
 
 ## Release
