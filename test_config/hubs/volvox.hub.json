@@ -11,6 +11,16 @@
       }
     },
     {
+      "type": "QuantitativeTrack",
+      "trackId": "volvox_hub_coverage",
+      "name": "Volvox coverage (from hub)",
+      "assemblyNames": ["volvox"],
+      "adapter": {
+        "type": "BigWigAdapter",
+        "uri": "http://localhost:3000/test_data/volvox/volvox.bw"
+      }
+    },
+    {
       "type": "FeatureTrack",
       "trackId": "volvox_hub_domains",
       "name": "Volvox protein domains (from hub)",
